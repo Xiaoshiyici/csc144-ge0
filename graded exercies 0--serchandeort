@@ -1,0 +1,315 @@
+package search;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+/**
+ * Linear search consists of sequential search of elements in a given data 
+ * structure until the element is found or the end of the structure is reached.
+ * If an element is found, we usually only return its position in the data structure.
+ * If not, we usually return - 1.
+ * 
+ * Binary tree search algorithm is controlled by reader and writer. 
+ * The basic idea is to divide the electronic tags which will lead to collision 
+ * and reduce the number of tags to be searched in the next step
+ * until only one electronic tag responds.
+ * 
+ * I've learned a lot from a Chinese app called CSDN.
+ * I don't know if it's available in the United States. 
+ * It introduces a lot of knowledge about computer language. 
+ * I want to translate it into English and share it with you next time.
+ * 
+ * This code is borrowed from professor Leon,thank him
+ * Because I'm a beginner, I can't write such complicated examples now.
+ * Through continuous learning, I will become more and more proficient.
+ * 
+ * @author Ziyu Guo
+ * @version March 29th,2020
+ */
+
+public class Search {
+
+    /**
+     * Random number generator
+     * The function is to create new random numbers
+     */
+    private static Random rng = new Random();
+    
+    private static final int SIZE_THRESHOLD = 16;
+/**
+ * The method makeList is for generating random two digit numbers
+ * @param size
+ * @return random numbers
+ */
+    public static List<Integer> makeList(int size) {
+        List<Integer> result = new ArrayList<>();
+
+        for (int i = 0; i < size; i++) {
+            int n = 10 + rng.nextInt(90);
+            result.add(n);
+        } // for
+
+        return result;
+    } // makeList( int )
+
+    public static void printList(List<Integer> values) {
+        if (values.size() < SIZE_THRESHOLD) {
+            for (int n : values) {
+                System.out.printf("%4d", n);
+            } // for
+            System.out.println();
+        } // if
+        else {
+            for (int n : values) {
+                System.out.printf("%4d\n", n);
+            } // for
+        } // else
+    } // printList( List<Integer> )
+
+    
+    /**
+     * LinerSearch used to find the first index in the list
+     * Search algorithm to find the target number in the list
+     * Will return to - 1 if no match is found
+     * @param values
+     * @param target
+     * @return -1 if no match is found
+     */
+    public static int linearSearch(List<Integer> values,
+            int target) {
+        int result = -1;
+
+        int index = 0;
+        while (index < values.size() && result < 0) {
+            if (target == values.get(index)) {
+                result = index;
+            } // if
+            index = index + 1;
+        } // while
+        return result;
+    } // linearSearch( List<Integer>, int )
+
+    // TO-DO: Define a method that determines
+    // the index of the first integer in a list
+    // of integers that matches a given integer.
+    // The method should return -1 if no match is found.
+    // Use the binary search algorithm.
+    
+    
+    /**
+     * BinarySearch find first occurrence index
+     * The target numbers in the list are then semi sorted by binary search
+     * to narrow the scope
+     * Will return to - 1 if no match is found
+     * 
+     * @param values
+     * @param target
+     * @return -1 if no match is found
+     */
+    public static int binarySearch(List<Integer> values,
+            int target) {
+        int result = -1;
+
+        int lo = 0;
+        int hi = values.size() - 1;
+
+        while (lo < hi && result < 0) {
+            int mid = (lo + hi) / 2;
+            if (target == values.get(lo)) {
+                result = lo;
+            } // if
+            else if (target == values.get(mid)) {
+                result = mid;
+            } // else if
+            else if (target == values.get(hi)) {
+                result = hi;
+            } // else if
+            else if (target < values.get(mid)) {
+                hi = mid - 1;
+            } // else if
+            else {
+                lo = mid + 1;
+            } // else
+        } // while
+
+        return result;
+    } // binarySearch( List<Integer>, int )
+
+    // TO-DO: Define a method that sorts a list
+    // of integers using the selection sort algorithm.
+    
+    
+    public static void swap(List<Integer> values, int i, int j) {
+        int temp = values.get(i);
+        values.set(i, values.get(j));
+        values.set(j, temp);
+    } // swap( List<Integer>, int, int )
+  public static int findPosMin(List<Integer> values, int start) {
+        int bestGuessSoFar = start;
+        for (int i = start + 1; i < values.size(); i++) {
+            if (values.get(i) < values.get(bestGuessSoFar)) {
+                bestGuessSoFar = i;
+            } // if
+        } // for
+        return bestGuessSoFar;
+    } // findPosMin( List<Integer>, int )
+
+   
+  /**
+   * For selectionsort,each time, select the smallest (or largest) element from
+   * the data elements to be sorted, 
+   * and store it at the beginning of the sequence until all the data elements
+   * to be sorted are finished.
+   * @param values : The list of numbers to be ordered.
+   * @param values the list of integers to be ordered.
+   * 
+   */
+  public static void selectionSort(List<Integer> values) {
+        for (int i = 0; i < values.size(); i++) {
+            int j = findPosMin(values, i);
+            swap(values, i, j);
+        } // for
+    } // selectionSort( List<Integer> )
+
+    // TO-DO: Define a method that sorts a list
+    // of integers using the insertion sort algorithm.
+  
+  /**
+   * For insertsort,Compare all the elements in the array 
+   * with those already arranged.
+   * If the selected element is smaller than the sorted element,
+   * insert it before the element until all the elements have been compared.
+   * Features: the more orderly, the faster.
+   * @param values
+   * @param next 
+   * @param the list of integers to be ordered
+   */
+    public static void insert(List<Integer> values, int next) {
+
+        int i = next;
+        while (i > 0 && values.get(i) < values.get(i - 1)) {
+            swap(values, i, i - 1);
+            i = i - 1;
+        } // while
+
+    } // insert( List<Integer>, int )
+
+    public static void insertionSort(List<Integer> values) {
+        for (int i = 1; i < values.size(); i++) {
+            insert(values, i);
+        } // for
+    } // insertionSort( List<Integer> )
+
+    // TO-DO: Define a method that sorts a list
+    // of integers using the merge sort algorithm.
+    
+    
+    /**
+     * For merge, is used to combine ordered sublists into one ordered list. 
+     * @param values
+     * @param prefixStart
+     * @param suffixStart
+     * @param suffixEnd 
+     */
+    public static void merge(List<Integer> values, int prefixStart,
+            int suffixStart, int suffixEnd) {
+        //Make a comparison. Whoever is small will stay, and whoever is small will go back.
+        List<Integer> temp = new ArrayList<>();
+        //Used to put the new sequence arranged after merging.
+
+        int i = prefixStart;
+        int j = suffixStart;
+
+        while (i < suffixStart && j < suffixEnd) {
+            if (values.get(i) < values.get(j)) {
+                temp.add(values.get(i));
+                i++;
+            } // if
+            else {
+   temp.add(values.get(j));
+                j++;
+            } // else
+        } // while
+
+        while (i < suffixStart) {
+            temp.add(values.get(i));
+            i++;
+        } // while
+
+        while (j < suffixEnd) {
+            temp.add(values.get(j));
+            j++;
+        } // while
+
+        i = prefixStart;
+        for (int index = 0; index < temp.size(); index++) {
+            values.set(i, temp.get(index));
+            i++;
+        } // for
+    } // merge( List<Integer>, int, int )
+
+    
+    
+   /**
+    * For mergeSort,the sequence to be arranged is recursively divided into 
+    * two subsequences of equal length until it is decomposed into one 
+    * subsequence containing one element.
+    * Recursively merge every two subsequences into an ordered subsequence.
+    * The final merged sequence is an ordered sequence.
+    * @param values 
+    */
+    public static void mergeSort(List<Integer> values) {
+        for (int stepSize = 2; stepSize < values.size(); stepSize *= 2) {
+            for (int i = 0; i < values.size(); i += stepSize) {
+                int prefixStart = i;
+                int suffixStart = i + stepSize / 2;
+                int suffixEnd = Math.min(values.size(), i + stepSize);
+                merge(values, prefixStart, suffixStart, suffixEnd);
+            } // for
+            if (stepSize > values.size() / 2) {
+                int prefixStart = 0;
+                int suffixStart = stepSize;
+                int suffixEnd = values.size();
+                merge(values, prefixStart, suffixStart, suffixEnd);
+            } // if
+            //printList(values);
+        } // for
+    } // mergeSort( List<Integer> )
+
+    
+    
+    /**
+     * Main() is used to print out the generated random number sequence.
+     * @param args 
+     */
+    public static void main(String[] args) {
+        System.out.println("Searching and sorting algorithms");
+
+        // TO-DO: Add code that tests the searching and sorting
+        // methods.
+        System.out.println("Selection sort.");
+        List<Integer> data = makeList(12);
+        printList(data);
+        System.out.println(" **** ");
+        selectionSort(data);
+        printList(data);
+
+        System.out.println(" **** ");
+
+        System.out.println("Insertion sort.");
+        data = makeList(12);
+        printList(data);
+        System.out.println(" **** ");
+        insertionSort(data);
+        printList(data);
+
+        System.out.println(" **** ");
+
+        System.out.println("Merge sort.");
+        data = makeList(12);
+        printList(data);
+        System.out.println(" **** ");
+        mergeSort(data);
+        printList(data);
+    } // main( String [] )
+} // SearchAndSort
